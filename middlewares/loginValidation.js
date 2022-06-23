@@ -22,7 +22,7 @@ const generateToken = () => crypto.randomBytes(8).toString('hex');
 // };
 //----------------------------------------------------------------------------------
 
-const loginValidation = (req, res, next) => {
+const loginValidation = (req, res) => {
         const { email, password } = req.body;
         emailValidation(email, res);
         passwordValidation(password, res);

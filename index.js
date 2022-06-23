@@ -1,8 +1,13 @@
 const express = require('express');
+const fs = require('fs/promises');
 const bodyParser = require('body-parser');
 const getTalkers = require('./middlewares/getTalkers');
 const getTalkerById = require('./middlewares/getTalkerById');
-const loginValidation = require('./middlewares/loginValidation')
+const loginValidation = require('./middlewares/loginValidation');
+const tokenValidation = require('./middlewares/tokenValidation');
+const userValidation = require('./middlewares/userValidation');
+const talkObjValidation = require('./middlewares/talkObjValidation');
+const writeTalkers = require('./middlewares/writeTalkers');
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,18 +15,37 @@ app.use(bodyParser.json());
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 
+app.use((req, _res, next) => {
+  console.log('req.method:', req.method);
+  console.log('req.path:', req.path);
+  console.log('req.params:', req.params);
+  console.log('req.query:', req.query);
+  console.log('req.headers:', req.headers);
+  console.log('req.body:', req.body);
+  next();
+});
+
+// não remova esse endpoint, e para o avaliador funcionar
+app.get('/', (_request, response) => {
+  response.status(HTTP_OK_STATUS).send();
+});
+
 // - Requisito 1
 app.get('/talker', getTalkers);
 
 // - Requisito 2
 app.get('/talker/:id', getTalkerById);
 
-// - Requisito 3
+// - Requisito 3 e 4
 app.post('/login', loginValidation);
 
-// não remova esse endpoint, e para o avaliador funcionar
-app.get('/', (_request, response) => {
-  response.status(HTTP_OK_STATUS).send();
+// - Requisito 5
+app.post('/talker', tokenValidation, userValidation, talkObjValidation, async (req, res) => {
+  const { name, age, talk } = req.body;
+  const id = Number(talkers[talkers.length - 1].id) + 1;
+  const newTalk = { name, age, id, talk };
+  await writeTalkers(newTalk);
+  return res.status(201).json(newTalk);
 });
 
 app.listen(PORT, () => {

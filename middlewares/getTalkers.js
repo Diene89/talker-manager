@@ -1,12 +1,13 @@
 const fs = require('fs/promises');
 
 const talkers = './talker.json';
+const empty = [];
 
 const getTalkers = async (_req, res) => {
     const data = JSON.parse(await fs.readFile(talkers));
-    if (!data) return res.status(200).json([]);
-    
-    res.status(200).json(data);
+    return !data
+    ? res.status(200).json(empty)
+    : res.status(200).json(data)
 };
 
 module.exports = getTalkers;
