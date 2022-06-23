@@ -1,12 +1,9 @@
-const fs = require('fs/promises');
-
-const talkers = './talker.json';
-const empty = [];
+const fs = require('fs').promises;
 
 const getTalkers = async (_req, res) => {
-    const data = JSON.parse(await fs.readFile(talkers));
+    const data = JSON.parse(await fs.readFile('./talker.json'));
     return !data
-    ? res.status(200).json(empty)
+    ? res.status(200).json([])
     : res.status(200).json(data);
 };
 

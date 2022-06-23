@@ -1,12 +1,14 @@
 const express = require('express');
+const fs = require('fs/promises');
 const bodyParser = require('body-parser');
 const getTalkers = require('./middlewares/getTalkers');
 const getTalkerById = require('./middlewares/getTalkerById');
 const loginValidation = require('./middlewares/loginValidation');
 const tokenValidation = require('./middlewares/tokenValidation');
+const talkValidation = require('./middlewares/talkValidation');
 const userValidation = require('./middlewares/userValidation');
-const talkObjValidation = require('./middlewares/talkObjValidation');
-const writeTalkers = require('./middlewares/writeTalkers');
+const rateValidation = require('./middlewares/rateValidation');
+const watchedAtValidation = require('./middlewares/watchedAtValidation');
 
 const app = express();
 app.use(bodyParser.json());
@@ -39,12 +41,15 @@ app.get('/talker/:id', getTalkerById);
 app.post('/login', loginValidation);
 
 // - Requisito 5
-app.post('/talker', tokenValidation, userValidation, talkObjValidation, async (req, res) => {
+app.post('/talker', tokenValidation, userValidation,
+talkValidation, watchedAtValidation, rateValidation, async (req, res) => {
   const { name, age, talk } = req.body; 
-  const talkers = await getTalkers();
+  const talkers = JSON.parse(await fs.readFile('./talker.json'));
   const id = Number(talkers[talkers.length - 1].id) + 1;
-  const newTalk = { name, age, id, talk };
-  await writeTalkers(newTalk);
+  const newTalk = { name, age, talk, id };
+  talkers.push(newTalk);
+  const talkersConvert = JSON.stringify(talkers);
+  await fs.writeFile('./talker.json', talkersConvert);
   res.status(201).json(newTalk);
 });
 
