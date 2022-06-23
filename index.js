@@ -1,5 +1,4 @@
 const express = require('express');
-const fs = require('fs/promises');
 const bodyParser = require('body-parser');
 const getTalkers = require('./middlewares/getTalkers');
 const getTalkerById = require('./middlewares/getTalkerById');
@@ -41,11 +40,12 @@ app.post('/login', loginValidation);
 
 // - Requisito 5
 app.post('/talker', tokenValidation, userValidation, talkObjValidation, async (req, res) => {
-  const { name, age, talk } = req.body;
+  const { name, age, talk } = req.body; 
+  const talkers = await getTalkers();
   const id = Number(talkers[talkers.length - 1].id) + 1;
   const newTalk = { name, age, id, talk };
   await writeTalkers(newTalk);
-  return res.status(201).json(newTalk);
+  res.status(201).json(newTalk);
 });
 
 app.listen(PORT, () => {
