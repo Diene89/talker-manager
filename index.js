@@ -9,6 +9,7 @@ const talkValidation = require('./middlewares/talkValidation');
 const userValidation = require('./middlewares/userValidation');
 const rateValidation = require('./middlewares/rateValidation');
 const watchedAtValidation = require('./middlewares/watchedAtValidation');
+const editTalker = require('./middlewares/editTalker');
 
 const app = express();
 app.use(bodyParser.json());
@@ -52,6 +53,9 @@ talkValidation, watchedAtValidation, rateValidation, async (req, res) => {
   await fs.writeFile('./talker.json', talkersConvert);
   res.status(201).json(newTalk);
 });
+
+app.put('/talker/:id', tokenValidation, userValidation,
+talkValidation, watchedAtValidation, rateValidation, editTalker);
 
 app.listen(PORT, () => {
   console.log('Online');
