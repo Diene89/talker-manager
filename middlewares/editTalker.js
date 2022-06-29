@@ -11,7 +11,6 @@ const editTalker = async (req, res) => {
     req.body.id = Number(id);
     const talkerIndex = talkers.indexOf(foundTalker);
     talkers.splice(talkerIndex, 1, req.body);
-    console.log('qwe', talkers);
     const talkersConvert = JSON.stringify(talkers);
     await fs.writeFile('./talker.json', talkersConvert);
     return res.status(200).json(req.body);

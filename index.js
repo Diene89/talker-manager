@@ -10,6 +10,7 @@ const userValidation = require('./middlewares/userValidation');
 const rateValidation = require('./middlewares/rateValidation');
 const watchedAtValidation = require('./middlewares/watchedAtValidation');
 const editTalker = require('./middlewares/editTalker');
+const deleteTalker = require('./middlewares/deleteTalker');
 
 const app = express();
 app.use(bodyParser.json());
@@ -54,8 +55,12 @@ talkValidation, watchedAtValidation, rateValidation, async (req, res) => {
   res.status(201).json(newTalk);
 });
 
+// - Requisito 6
 app.put('/talker/:id', tokenValidation, userValidation,
 talkValidation, watchedAtValidation, rateValidation, editTalker);
+
+// - Requisito 7
+app.delete('/talker/:id', tokenValidation, deleteTalker);
 
 app.listen(PORT, () => {
   console.log('Online');
