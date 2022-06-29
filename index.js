@@ -33,16 +33,16 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-// - Requisito 1
+// -> Requisito 1
 app.get('/talker', getTalkers);
 
-// - Requisito 2
+// -> Requisito 2
 app.get('/talker/:id', getTalkerById);
 
-// - Requisito 3 e 4
+// -> Requisito 3 e 4
 app.post('/login', loginValidation);
 
-// - Requisito 5
+// -> Requisito 5
 app.post('/talker', tokenValidation, userValidation,
 talkValidation, watchedAtValidation, rateValidation, async (req, res) => {
   const { name, age, talk } = req.body; 
@@ -55,11 +55,11 @@ talkValidation, watchedAtValidation, rateValidation, async (req, res) => {
   res.status(201).json(newTalk);
 });
 
-// - Requisito 6
+// -> Requisito 6
 app.put('/talker/:id', tokenValidation, userValidation,
 talkValidation, watchedAtValidation, rateValidation, editTalker);
 
-// - Requisito 7
+// -> Requisito 7
 app.delete('/talker/:id', tokenValidation, deleteTalker);
 
 app.listen(PORT, () => {
